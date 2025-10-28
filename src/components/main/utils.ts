@@ -1,4 +1,4 @@
-import dagre from "dagre";
+import ELK from 'elkjs/lib/elk.bundled.js';
 import type { Node as FlowNode } from "@xyflow/react";
 
 interface QueueItem {
@@ -20,16 +20,19 @@ interface Edge {
 
 let idCounter = 0;
 
-const dagreGraph = new dagre.graphlib.Graph();
-dagreGraph.setDefaultEdgeLabel(() => ({}));
+const elk = new ELK();
 
-// You can change this to 'LR' for left-right
-const graphOptions = { rankdir: "LR" };
+const elkOptions = {
+  'elk.algorithm': 'mrtree',
+  'elk.direction': 'DOWN',
+  'nodePlacement.strategy': 'SIMPLE',
+};
 
-export const jsonToNodes = (
+export const jsonToNodes = async (
   json: string
-): { nodes: FlowNode[]; edges: Edge[] } => {
+): Promise<{ nodes: FlowNode[]; edges: Edge[] }> => {
   json = JSON.parse(json);
+  idCounter = 0;
 
   const nodes: CustomNode[] = [];
   const edges: Edge[] = [];
@@ -60,8 +63,8 @@ export const jsonToNodes = (
       data: { label },
       position: { x: 0, y: 0 }, // Will update this after   layout
       type: "default",
-      sourcePosition: "right", 
-      targetPosition: "left", 
+      sourcePosition: "bottom", 
+      targetPosition: "top", 
       ...(parentId ? { parentId } : {}),
     });
 
@@ -89,28 +92,27 @@ export const jsonToNodes = (
     }
   }
 
+  const graph = {
+    id: 'root',
+    layoutOptions: elkOptions,
+    children: nodes.map(node => ({ ...node, width: 150, height: 50 })),
+    edges: edges,
+  };
 
-  dagreGraph.setGraph(graphOptions);
-
-  nodes.forEach((node) => {
-    dagreGraph.setNode(node.id, { width: 150, height: 50 });
-  });
-
-  edges.forEach((edge) => {
-    dagreGraph.setEdge(edge.source, edge.target);
-  });
-
-  dagre.layout(dagreGraph);
+  const layout = await elk.layout(graph);
 
   const positionedNodes = nodes.map((node) => {
-    const nodeWithPos = dagreGraph.node(node.id);
-    return {
-      ...node,
-      position: {
-        x: nodeWithPos.x,
-        y: nodeWithPos.y,
-      },
-    };
+    const nodeWithPos = layout.children.find(child => child.id === node.id);
+    if (nodeWithPos) {
+      return {
+        ...node,
+        position: {
+          x: nodeWithPos.x,
+          y: nodeWithPos.y,
+        },
+      };
+    }
+    return node;
   });
 
   return { nodes: positionedNodes, edges };

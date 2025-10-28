@@ -29,9 +29,12 @@ const Reactflowmain = () => {
   // Convert JSON to nodes and edges whenever activeJson changes
   useEffect(() => {
     if (activeJson && validJson) {
-      const { nodes: newNodes, edges: newEdges } = jsonToNodes(activeJson);
-      setNodes(newNodes);
-      setEdges(newEdges);
+      const getLayoutedElements = async () => {
+        const { nodes: newNodes, edges: newEdges } = await jsonToNodes(activeJson);
+        setNodes(newNodes);
+        setEdges(newEdges);
+      };
+      getLayoutedElements();
     }
   }, [activeJson, setNodes, setEdges]);
 
