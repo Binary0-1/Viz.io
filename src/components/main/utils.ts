@@ -6,6 +6,7 @@ interface QueueItem {
   value: unknown;
   parentId?: string;
   id: string;
+  depth: number;
 }
 
 interface Edge {
@@ -39,21 +40,39 @@ export const jsonToNodes = async (
   const getId = () => `node_${idCounter++}`;
   const rootId = getId();
 
-  queue.push({ key: "root", value: parsedJson, id: rootId });
+  const colorLevels = [
+    "#FDE68A", // Yellow
+    "#A7F3D0", // Mint
+    "#93C5FD", // Blue
+    "#C7D2FE", // Purple
+    "#F9A8D4", // Pink
+    "#FDBA74", // Orange
+  ];
+
+  queue.push({ key: "root", value: parsedJson, id: rootId, depth: 0 });
 
   while (queue.length > 0) {
     const item = queue.shift();
     if (!item) continue;
 
-    const { key, value, parentId, id } = item;
+    const { key, value, parentId, id, depth } = item;
     const label =
       typeof value === "object" && value !== null ? key : `${key}: ${value}`;
+
+    const color = colorLevels[depth % colorLevels.length];
 
     nodes.push({
       id,
       data: { label },
       position: { x: 0, y: 0 },
       type: "default",
+      style: {
+        backgroundColor: color,
+        border: "1px solid #ccc",
+        borderRadius: 10,
+        padding: 8,
+        fontSize: 12,
+      },
     });
 
     if (parentId) {
@@ -72,6 +91,7 @@ export const jsonToNodes = async (
           value: childValue,
           parentId: id,
           id: getId(),
+          depth: depth + 1,
         });
       }
     }
@@ -106,7 +126,6 @@ export const jsonToNodes = async (
     };
   });
 
-  // Center the layout
   const minX = Math.min(...positionedNodes.map((n) => n.position.x));
   const minY = Math.min(...positionedNodes.map((n) => n.position.y));
 

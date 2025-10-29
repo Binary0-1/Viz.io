@@ -27,7 +27,6 @@ const NewResizableSidebar = () => {
   const handleJsonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setActiveJson(val);
-
     try {
       JSON.parse(val);
       setValidJson(true);
@@ -38,7 +37,6 @@ const NewResizableSidebar = () => {
 
   const handleBeautify = () => {
     if (!activeJson || !validJson) {
-      alert("Not a Valid Json ");
       return;
     }
 
@@ -54,16 +52,35 @@ const NewResizableSidebar = () => {
   return (
     <div
       style={{ width: `${width}px` }}
-      className=" bg-white shadow-md relative flex-shrink-0 border-r-[5px] border-amber-400 rounded-[20px]"
+      className=" bg-white relative flex-shrink-0 rounded-[20px] rounded-r-[0px] "
     >
       <div
-        className="absolute top-0 right-0 h-full w-2 cursor-col-resize "
+        className="absolute top-0 right-0 h-full w-[3px] cursor-col-resize hover:bg-amber-600  rounded-tr-[20px] rounded-br-[20px]"
         onMouseDown={handleMouseDown}
       />
+      <button
+        onClick={handleBeautify}
+        className={`absolute top-4 right-4  text-white p-2 rounded-md group ${validJson ? "bg-amber-500 transition-all duration-150 hover:scale-120 cursor-pointer" : "bg-gray-400 cursor-not-allowed"}`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-5 h-5 "
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4 6h16M8 12h12M12 18h8"
+          />
+        </svg>
+      </button>
       <textarea
         value={activeJson}
         onChange={handleJsonChange}
-        className="w-full h-full p-4 resize-none outline-none text-sm font-mono"
+        className="w-full h-full p-4 pr-0  resize-none outline-none text-sm font-mono text-gray-800 [scrollbar-width:thin] [scrollbar-color:rgb(156,163,175)_transparent]"
         placeholder="Paste or write your JSON here..."
       />
     </div>
