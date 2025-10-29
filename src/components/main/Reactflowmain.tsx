@@ -41,7 +41,7 @@ const Reactflowmain = () => {
   }, [activeJson, setNodes, setEdges]);
 
   return (
-    <div className="w-[100%] h-[calc(100vh-40px)] bg-white rounded-[20px] border-r-[5px] border-gray-600 ">
+    <div className="w-[100%] h-[calc(100vh-40px)] bg-white rounded-[20px] border-r-[5px] border-amber-400 ">
       <ReactFlow
         nodes={nodes}
         edges={edges}

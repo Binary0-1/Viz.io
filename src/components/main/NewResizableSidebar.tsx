@@ -54,7 +54,7 @@ const NewResizableSidebar = () => {
   return (
     <div
       style={{ width: `${width}px` }}
-      className=" bg-white shadow-md relative flex-shrink-0 border-r-[5px] border-gray-600 rounded-[20px]"
+      className=" bg-white shadow-md relative flex-shrink-0 border-r-[5px] border-amber-400 rounded-[20px]"
     >
       <div
         className="absolute top-0 right-0 h-full w-2 cursor-col-resize "
