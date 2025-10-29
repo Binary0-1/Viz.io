@@ -11,7 +11,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect } from "react";
-import { useJsonContext } from "./../contexts/JsonContext"; 
+import { useJsonContext } from "./../contexts/JsonContext";
 
 import { jsonToNodes } from "./utils";
 
@@ -30,7 +30,8 @@ const Reactflowmain = () => {
   useEffect(() => {
     if (activeJson && validJson) {
       const getLayoutedElements = async () => {
-        const { nodes: newNodes, edges: newEdges } = await jsonToNodes(activeJson);
+        const { nodes: newNodes, edges: newEdges } =
+          await jsonToNodes(activeJson);
         setNodes(newNodes);
         setEdges(newEdges);
       };
@@ -39,7 +40,7 @@ const Reactflowmain = () => {
   }, [activeJson, setNodes, setEdges]);
 
   return (
-    <div className="w-[100%] h-[100vh]">
+    <div className="w-[100%] h-[calc(100vh-40px)] bg-white rounded-[20px] border-r-[5px] border-gray-600 ">
       <ReactFlow
         nodes={nodes}
         edges={edges}
